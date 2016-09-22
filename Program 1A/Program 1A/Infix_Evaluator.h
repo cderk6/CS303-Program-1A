@@ -4,6 +4,7 @@
 #include <string>
 #include "String_Tokenizer.h"
 #include <stack>
+#include <iostream>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ private:
 	int isOperator(string op);
 
 public:
-	int evaluate(string& expression);
+	int evaluate(string expression);
 
 };
 
