@@ -11,7 +11,7 @@ using namespace std;
 class Infix_Evaluator
 {
 private:
-	int isOperator(string op);
+	int getPrecedence(string op);
 
 public:
 	int evaluate(string expression);
