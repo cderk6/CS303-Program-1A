@@ -8,7 +8,8 @@ int main()
 {
 	Infix_Evaluator evaluate;
 	int result;
-	result = evaluate.evaluate("1*2");
+	result = evaluate.evaluate("(1+2)*3");
+	cout << "The answer is " << result << endl;
 	system("pause");
 	return 0;
 }
