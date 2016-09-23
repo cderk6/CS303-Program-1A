@@ -1,4 +1,5 @@
 #include "Infix_Evaluator.h"
+#include <algorithm>
 
 const string OPERATORS[] = { "||", "&&", "==", "!=", "<", ">", ">=", "<=", "+", "-",
 								"*", "/" , "%", "^", "-", "--", "++", "!", "(", ")" };
@@ -8,11 +9,15 @@ int Infix_Evaluator::evaluate(string expression)
 {
 	stack<int> operands;
 	stack<string> operators;
+	// Remove all whitespace from expression
+	expression.erase(remove_if(expression.begin(), expression.end(), isspace), expression.end());
 	istringstream tokens(expression);
 	String_Tokenizer tokenizer;
 	string token, last_pushed = "";
-	while (!tokens.eof())
+	char test;
+	while (tokens >> test)
 	{
+		tokens.putback(test);
 		token = tokenizer.nextToken(tokens, last_pushed);
 		cout << token;
 		// If operand, convert to int and push onto operand stack
@@ -27,42 +32,53 @@ int Infix_Evaluator::evaluate(string expression)
 			{
 				while (operators.top() != "(")
 				{
-					int rhs = operands.top();
-					operands.pop();
-					int lhs = operands.top();
-					operands.pop();
-					if (operators.top() == "||")
-						operands.push(lhs || rhs);
-					else if (operators.top() == "&&")
-						operands.push(lhs && rhs);
-					else if (operators.top() == "!=")
-						operands.push(lhs != rhs);
-					else if (operators.top() == "==")
-						operands.push(lhs == rhs);
-					else if (operators.top() == "<")
-						operands.push(lhs < rhs);
-					else if (operators.top() == ">")
-						operands.push(lhs > rhs);
-					else if (operators.top() == ">=")
-						operands.push(lhs >= rhs);
-					else if (operators.top() == "<=")
-						operands.push(lhs <= rhs);
-					else if (operators.top() == "+")
-						operands.push(lhs + rhs);
-					else if (operators.top() == "-")
-						operands.push(lhs - rhs);
-					else if (operators.top() == "*")
-						operands.push(lhs * rhs);
-					else if (operators.top() == "/")
-						operands.push(lhs / rhs);
-					else if (operators.top() == "%")
-						operands.push(lhs % rhs);
-					else if (operators.top() == "^")
-						operands.push(pow(lhs, rhs));
-					else if (operators.top() == "++")
+					if (getPrecedence(operators.top()) == 8)
 					{
-						operands.push(lhs);
-						operands.push(++rhs);
+						int rhs = operands.top();
+						operands.pop();
+						if (operators.top() == "++")
+							operands.push(++rhs);
+						else if (operators.top() == "--")
+							operands.push(--rhs);
+						else if (operators.top() == "neg")
+							operands.push(-rhs);
+						else if (operators.top() == "!")
+							operands.push(!rhs);
+					}
+					else
+					{
+						int rhs = operands.top();
+						operands.pop();
+						int lhs = operands.top();
+						operands.pop();
+						if (operators.top() == "||")
+							operands.push(lhs || rhs);
+						else if (operators.top() == "&&")
+							operands.push(lhs && rhs);
+						else if (operators.top() == "!=")
+							operands.push(lhs != rhs);
+						else if (operators.top() == "==")
+							operands.push(lhs == rhs);
+						else if (operators.top() == "<")
+							operands.push(lhs < rhs);
+						else if (operators.top() == ">")
+							operands.push(lhs > rhs);
+						else if (operators.top() == ">=")
+							operands.push(lhs >= rhs);
+						else if (operators.top() == "<=")
+							operands.push(lhs <= rhs);
+						else if (operators.top() == "+")
+							operands.push(lhs + rhs);
+						else if (operators.top() == "-")
+							operands.push(lhs - rhs);
+						else if (operators.top() == "*")
+							operands.push(lhs * rhs);
+						else if (operators.top() == "/")
+							operands.push(lhs / rhs);
+						else if (operators.top() == "%")
+							operands.push(lhs % rhs);
+						else if (operators.top() == "^")
+							operands.push(pow(lhs, rhs));
 					}
 					operators.pop();
 					// If it's empty, no matching opening paranthesis was found
@@ -91,42 +107,53 @@ int Infix_Evaluator::evaluate(string expression)
 				}
 				else
 				{
-					int rhs = operands.top();
-					operands.pop();
-					int lhs = operands.top();
-					operands.pop();
-					if (operators.top() == "||")
-						operands.push(lhs || rhs);
-					else if (operators.top() == "&&")
-						operands.push(lhs && rhs);
-					else if (operators.top() == "!=")
-						operands.push(lhs != rhs);
-					else if (operators.top() == "==")
-						operands.push(lhs == rhs);
-					else if (operators.top() == "<")
-						operands.push(lhs < rhs);
-					else if (operators.top() == ">")
-						operands.push(lhs > rhs);
-					else if (operators.top() == ">=")
-						operands.push(lhs >= rhs);
-					else if (operators.top() == "<=")
-						operands.push(lhs <= rhs);
-					else if (operators.top() == "+")
-						operands.push(lhs + rhs);
-					else if (operators.top() == "-")
-						operands.push(lhs - rhs);
-					else if (operators.top() == "*")
-						operands.push(lhs * rhs);
-					else if (operators.top() == "/")
-						operands.push(lhs / rhs);
-					else if (operators.top() == "%")
-						operands.push(lhs % rhs);
-					else if (operators.top() == "^")
-						operands.push(pow(lhs, rhs));
-					else if (operators.top() == "++")
+					if (getPrecedence(operators.top()) == 8)
 					{
-						operands.push(lhs);
-						operands.push(++rhs);
+						int rhs = operands.top();
+						operands.pop();
+						if (operators.top() == "++")
+							operands.push(++rhs);
+						else if (operators.top() == "--")
+							operands.push(--rhs);
+						else if (operators.top() == "neg")
+							operands.push(-rhs);
+						else if (operators.top() == "!")
+							operands.push(!rhs);
+					}
+					else
+					{
+						int rhs = operands.top();
+						operands.pop();
+						int lhs = operands.top();
+						operands.pop();
+						if (operators.top() == "||")
+							operands.push(lhs || rhs);
+						else if (operators.top() == "&&")
+							operands.push(lhs && rhs);
+						else if (operators.top() == "!=")
+							operands.push(lhs != rhs);
+						else if (operators.top() == "==")
+							operands.push(lhs == rhs);
+						else if (operators.top() == "<")
+							operands.push(lhs < rhs);
+						else if (operators.top() == ">")
+							operands.push(lhs > rhs);
+						else if (operators.top() == ">=")
+							operands.push(lhs >= rhs);
+						else if (operators.top() == "<=")
+							operands.push(lhs <= rhs);
+						else if (operators.top() == "+")
+							operands.push(lhs + rhs);
+						else if (operators.top() == "-")
+							operands.push(lhs - rhs);
+						else if (operators.top() == "*")
+							operands.push(lhs * rhs);
+						else if (operators.top() == "/")
+							operands.push(lhs / rhs);
+						else if (operators.top() == "%")
+							operands.push(lhs % rhs);
+						else if (operators.top() == "^")
+							operands.push(pow(lhs, rhs));
 					}
 					operators.pop();
 				}
@@ -141,44 +168,56 @@ int Infix_Evaluator::evaluate(string expression)
 	}
 	while (!operands.empty() && !operators.empty())
 	{
-		int rhs = operands.top();
-		operands.pop();
-		int lhs = operands.top();
-		operands.pop();
-		if (operators.top() == "||")
-			operands.push(lhs || rhs);
-		else if (operators.top() == "&&")
-			operands.push(lhs && rhs);
-		else if (operators.top() == "!=")
-			operands.push(lhs != rhs);
-		else if (operators.top() == "==")
-			operands.push(lhs == rhs);
-		else if (operators.top() == "<")
-			operands.push(lhs < rhs);
-		else if (operators.top() == ">")
-			operands.push(lhs > rhs);
-		else if (operators.top() == ">=")
-			operands.push(lhs >= rhs);
-		else if (operators.top() == "<=")
-			operands.push(lhs <= rhs);
-		else if (operators.top() == "+")
-			operands.push(lhs + rhs);
-		else if (operators.top() == "-")
-			operands.push(lhs - rhs);
-		else if (operators.top() == "*")
-			operands.push(lhs * rhs);
-		else if (operators.top() == "/")
-			operands.push(lhs / rhs);
-		else if (operators.top() == "%")
-			operands.push(lhs % rhs);
-		else if (operators.top() == "^")
-			operands.push(pow(lhs, rhs));
-		else if (operators.top() == "++")
+		if (getPrecedence(operators.top()) == 8)
 		{
-			operands.push(lhs);
-			operands.push(++rhs);
+			int rhs = operands.top();
+			operands.pop();
+			if (operators.top() == "++")
+				operands.push(++rhs);
+			else if (operators.top() == "--")
+				operands.push(--rhs);
+			else if (operators.top() == "neg")
+				operands.push(-rhs);
+			else if (operators.top() == "!")
+				operands.push(!rhs);
+		}
+		else
+		{
+			int rhs = operands.top();
+			operands.pop();
+			int lhs = operands.top();
+			operands.pop();
+			if (operators.top() == "||")
+				operands.push(lhs || rhs);
+			else if (operators.top() == "&&")
+				operands.push(lhs && rhs);
+			else if (operators.top() == "!=")
+				operands.push(lhs != rhs);
+			else if (operators.top() == "==")
+				operands.push(lhs == rhs);
+			else if (operators.top() == "<")
+				operands.push(lhs < rhs);
+			else if (operators.top() == ">")
+				operands.push(lhs > rhs);
+			else if (operators.top() == ">=")
+				operands.push(lhs >= rhs);
+			else if (operators.top() == "<=")
+				operands.push(lhs <= rhs);
+			else if (operators.top() == "+")
+				operands.push(lhs + rhs);
+			else if (operators.top() == "-")
+				operands.push(lhs - rhs);
+			else if (operators.top() == "*")
+				operands.push(lhs * rhs);
+			else if (operators.top() == "/")
+				operands.push(lhs / rhs);
+			else if (operators.top() == "%")
+				operands.push(lhs % rhs);
+			else if (operators.top() == "^")
+				operands.push(pow(lhs, rhs));
 		}
 		operators.pop();
+
 		if (!operands.empty())
 			cout << "   Top: " << operands.top();
 		if (!operators.empty())
