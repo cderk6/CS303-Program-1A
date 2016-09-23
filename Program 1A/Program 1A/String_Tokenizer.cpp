@@ -1,6 +1,6 @@
 #include "String_Tokenizer.h"
 
-string String_Tokenizer::nextToken(istringstream& tokens)
+string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 {
 	char next_char;
 	tokens >> next_char;
@@ -13,7 +13,7 @@ string String_Tokenizer::nextToken(istringstream& tokens)
 		//convert int to string to be returned
 		return to_string(operand);
 	}
-	if (next_char == '*' || next_char == '/' || next_char == '%' || 
+	if (next_char == '*' || next_char == '/' || next_char == '%' ||
 		next_char == '^' || next_char == '(' || next_char == ')')
 	{
 		string return_string;
@@ -41,7 +41,61 @@ string String_Tokenizer::nextToken(istringstream& tokens)
 	}
 	if (next_char == '+')
 	{
-		return "+";
+		int count = 0;
+		char next_next_char;
+		tokens.putback(next_char);
+		next_next_char = '+';
+		//count # of + signs in a row to know whether odd or even
+		while (!tokens.eof() && next_next_char == '+')
+		{
+			tokens >> next_next_char;
+			if (next_next_char == '+')
+			{
+				++count;
+			}
+		}
+		//expression ends with a +
+		if (next_next_char == '+')
+		{
+			cout << "ERROR" << endl; ///////////////////////////////////////////////////////////add error
+		}
+		if (isdigit(last_pushed[0]) || last_pushed == ")")
+		{
+			if (count % 2 == 1)
+			{
+				tokens.putback(next_next_char);
+				for (int i = 1; i < count; i++)
+				{
+					tokens.putback(next_char);
+				}
+				string return_string;
+				return_string = next_char;
+				return return_string;
+			}
+			else
+			{
+				cout << "ERROR NEED BINARY OPERATOR BETWEEN TWO OPERANDS" << endl; /////////////////////add error
+			}
+		}
+		else
+		{
+			if (count % 2 == 0)
+			{
+				tokens.putback(next_next_char);
+				for (int i = 2; i < count; i++)
+				{
+					tokens.putback(next_char);
+				}
+				string first_char;
+				first_char = next_char;
+				string return_string = first_char + first_char;
+				return return_string;
+			}
+			else
+			{
+				cout << "ERROR NEED LHS AND RHS TO USE A BINARY OPERATOR" << endl; /////////////////add error
+			}
+		}
 	}
 	if (next_char == '-')
 	{

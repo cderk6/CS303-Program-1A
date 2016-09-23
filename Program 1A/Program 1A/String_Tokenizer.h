@@ -10,7 +10,7 @@ using namespace std;
 class String_Tokenizer
 {
 public: 
-	string nextToken(istringstream& tokens);
+	string nextToken(istringstream& tokens, string last_pushed);
 private:
 
 };

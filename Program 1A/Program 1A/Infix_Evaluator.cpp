@@ -10,10 +10,10 @@ int Infix_Evaluator::evaluate(string expression)
 	stack<string> operators;
 	istringstream tokens(expression);
 	String_Tokenizer tokenizer;
-	string token;
+	string token, last_pushed = "";
 	while (!tokens.eof())
 	{
-		token = tokenizer.nextToken(tokens);
+		token = tokenizer.nextToken(tokens, last_pushed);
 		cout << token;
 		// If operand, convert to int and push onto operand stack
 		if (getPrecedence(token) < 0)
@@ -59,6 +59,11 @@ int Infix_Evaluator::evaluate(string expression)
 						operands.push(lhs % rhs);
 					else if (operators.top() == "^")
 						operands.push(pow(lhs, rhs));
+					else if (operators.top() == "++")
+					{
+						operands.push(lhs);
+						operands.push(++rhs);
+					}
 					operators.pop();
 					// If it's empty, no matching opening paranthesis was found
 					if (operators.empty())
@@ -74,7 +79,7 @@ int Infix_Evaluator::evaluate(string expression)
 			bool operator_pushed = false;
 			do
 			{
-				if (operators.empty())
+				if (operators.empty() || getPrecedence(token) == 8)
 				{
 					operators.push(token);
 					operator_pushed = true;
@@ -118,6 +123,11 @@ int Infix_Evaluator::evaluate(string expression)
 						operands.push(lhs % rhs);
 					else if (operators.top() == "^")
 						operands.push(pow(lhs, rhs));
+					else if (operators.top() == "++")
+					{
+						operands.push(lhs);
+						operands.push(++rhs);
+					}
 					operators.pop();
 				}
 			} while (!operator_pushed);
@@ -127,6 +137,7 @@ int Infix_Evaluator::evaluate(string expression)
 		if (!operators.empty())
 			cout << " and " << operators.top();
 		cout << endl;
+		last_pushed = token;
 	}
 	while (!operands.empty() && !operators.empty())
 	{
@@ -162,6 +173,11 @@ int Infix_Evaluator::evaluate(string expression)
 			operands.push(lhs % rhs);
 		else if (operators.top() == "^")
 			operands.push(pow(lhs, rhs));
+		else if (operators.top() == "++")
+		{
+			operands.push(lhs);
+			operands.push(++rhs);
+		}
 		operators.pop();
 		if (!operands.empty())
 			cout << "   Top: " << operands.top();
