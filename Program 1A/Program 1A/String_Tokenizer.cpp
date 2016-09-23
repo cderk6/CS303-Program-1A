@@ -16,6 +16,11 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 	if (next_char == '*' || next_char == '/' || next_char == '%' ||
 		next_char == '^' || next_char == '(' || next_char == ')')
 	{
+		if (next_char != '(')
+		{
+			if (last_pushed == "")
+				throw logic_error("Cant start with closing parens or binary operator");
+		}
 		string return_string;
 		return_string = next_char;
 		return return_string;
@@ -39,25 +44,25 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			return return_string;
 		}
 	}
-	if (next_char == '+')
+	if (next_char == '+' || next_char == '-')
 	{
 		int count = 0;
 		char next_next_char;
 		tokens.putback(next_char);
-		next_next_char = '+';
+		next_next_char = next_char;
 		//count # of + signs in a row to know whether odd or even
-		while (!tokens.eof() && next_next_char == '+')
+		while (!tokens.eof() && next_next_char == next_char)
 		{
 			tokens >> next_next_char;
-			if (next_next_char == '+')
+			if (next_next_char == next_char)
 			{
 				++count;
 			}
 		}
 		//expression ends with a +
-		if (next_next_char == '+')
+		if (next_next_char == next_char)
 		{
-			cout << "ERROR" << endl; ///////////////////////////////////////////////////////////add error
+			throw logic_error("Expression cannot end with an operator.");
 		}
 		if (isdigit(last_pushed[0]) || last_pushed == ")")
 		{
@@ -74,7 +79,7 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			}
 			else
 			{
-				cout << "ERROR NEED BINARY OPERATOR BETWEEN TWO OPERANDS" << endl; /////////////////////add error
+				throw logic_error("Cannot have consecutive binary operators.");
 			}
 		}
 		else
@@ -93,14 +98,14 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			}
 			else
 			{
-				cout << "ERROR NEED LHS AND RHS TO USE A BINARY OPERATOR" << endl; /////////////////add error
+				throw logic_error("Need both lhs and rhs around binary operators.");
 			}
 		}
 	}
-	if (next_char == '-')
-	{
-		return "-";
-	}
+	//if (next_char == '-')
+	//{
+	//	return "-";
+	//}
 	if (next_char == '<' || next_char == '>')
 	{
 		char next_next_char;
@@ -133,8 +138,10 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 		}
 		else
 		{
-			cerr << next_char << " not allowed.";
+			throw logic_error("Invalid operator.");
 			return "";
 		}
 	}
+	else
+		throw logic_error("Invalid character");
 }

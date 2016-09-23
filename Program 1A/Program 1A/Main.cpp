@@ -8,7 +8,16 @@ int main()
 {
 	Infix_Evaluator evaluate;
 	int result;
-	result = evaluate.evaluate("++!0+++++5");
+	try
+	{
+		result = evaluate.evaluate("a");
+	}
+	catch (const logic_error e)
+	{
+		cerr << e.what() << endl;
+		system("pause");
+		exit(0);
+	}
 	cout << "The answer is " << result << endl;
 	system("pause");
 	return 0;

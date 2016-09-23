@@ -83,7 +83,7 @@ int Infix_Evaluator::evaluate(string expression)
 					operators.pop();
 					// If it's empty, no matching opening paranthesis was found
 					if (operators.empty())
-						break;
+						throw logic_error("No opening parenthesis found to match closing");
 				}
 				operators.pop(); // pop opening paranthesis
 			}
