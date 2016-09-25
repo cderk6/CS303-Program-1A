@@ -50,62 +50,31 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 	}
 	if (next_char == '+')
 	{
-		int count = 0;
-		char next_next_char;
-		tokens.putback(next_char);
-		next_next_char = next_char;
-		//count # of + signs in a row to know whether odd or even
-		while (!tokens.eof() && next_next_char == next_char)
-		{
-			tokens >> next_next_char;
-			if (next_next_char == next_char)
-			{
-				++count;
-			}
-		}
-		//if next_next_char == next_char still, expression ends with a +
-		if (next_next_char == next_char)
-		{
-			throw logic_error("Expression cannot end with an operator.");
-		}
-		//must have odd number if operands are on both sides of + signs
+		//if it follows an operand, return binary + sign
 		if (isdigit(last_pushed[0]) || last_pushed == ")")
 		{
-			if (count % 2 == 1)
+			char next_next_char;
+			if (tokens >> next_next_char)
 			{
 				tokens.putback(next_next_char);
-				for (int i = 1; i < count; i++)
-				{
-					tokens.putback(next_char);
-				}
-				string return_string;
-				return_string = next_char;
-				return return_string;
+				return "+";
 			}
 			else
-			{
-				throw logic_error("Cannot have consecutive binary operators.");
-			}
+				throw logic_error("Expression cannot end with an operator.");
 		}
-		//must have even number if there is no lhs operand to the operator +
+		//it is either ++ or an error
 		else
 		{
-			if (count % 2 == 0)
+			char next_next_char;
+			if (tokens >> next_next_char)
 			{
+				if (next_next_char == next_char)
+					return "++";
 				tokens.putback(next_next_char);
-				for (int i = 2; i < count; i++)
-				{
-					tokens.putback(next_char);
-				}
-				string first_char;
-				first_char = next_char;
-				string return_string = first_char + first_char;
-				return return_string;
+				throw logic_error("Binary operators need a lhs and rhs operand.");
 			}
 			else
-			{
-				throw logic_error("Need both lhs and rhs around binary operators.");
-			}
+				throw logic_error("Expression cannot end with an operator.");
 		}
 	}
 	if (next_char == '-')
