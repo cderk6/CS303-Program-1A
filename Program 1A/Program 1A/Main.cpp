@@ -8,9 +8,11 @@ int main()
 {
 	Infix_Evaluator evaluate;
 	int result;
+	//evaluate passed in string infix expression
+	//catch and output bad logic input by user
 	try
 	{
-		result = evaluate.evaluate("a");
+		result = evaluate.evaluate("3+++ 2");
 	}
 	catch (const logic_error e)
 	{
