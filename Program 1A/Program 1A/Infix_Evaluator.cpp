@@ -153,7 +153,13 @@ void Infix_Evaluator::operate()
 		else if (operators.top() == "*")
 			operands.push(lhs * rhs);
 		else if (operators.top() == "/")
+		{
+			if (rhs == 0)
+			{
+				throw logic_error("Can't divide by zero.");
+			}
 			operands.push(lhs / rhs);
+		}
 		else if (operators.top() == "%")
 			operands.push(lhs % rhs);
 		else if (operators.top() == "^")
