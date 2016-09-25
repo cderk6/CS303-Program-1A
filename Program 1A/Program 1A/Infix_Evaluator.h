@@ -14,15 +14,15 @@ private:
 	//stacks to hold operands and operators
 	stack<int> operands;
 	stack<string> operators;
-
-	//returns the precedence of a passed in operator
-	int getPrecedence(string op);
+	
 	//performs operation determined by top item on operator stack
 	void operate();
+	//returns the precedence of a passed in operator
+	int getPrecedence(string op);
 
 public:
 	//evaluates (if possible) a string of an infix expression
-	int evaluate(string expression);
+	int evaluate(string expression, int& index);
 
 };
 

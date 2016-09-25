@@ -8,15 +8,16 @@ int main()
 {
 	Infix_Evaluator evaluate;
 	int result;
+	int index = 0;
 	//evaluate passed in string infix expression
 	//catch and output bad logic input by user
 	try
 	{
-		result = evaluate.evaluate("5+++++5");
+		result = evaluate.evaluate("3>>2", index);
 	}
 	catch (const logic_error e)
 	{
-		cerr << e.what() << endl;
+		cerr << e.what() << " @ char " << index - 1 << endl;
 		system("pause");
 		exit(0);
 	}

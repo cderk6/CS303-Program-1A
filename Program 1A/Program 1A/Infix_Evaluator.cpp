@@ -5,7 +5,7 @@ const string OPERATORS[] = { "||", "&&", "==", "!=", "<", ">", ">=", "<=", "+", 
 								"*", "/" , "%", "^", "neg", "--", "++", "!", "(", ")" };
 const int PRECEDENCE[] = { 1, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 8, 0, 0 };
 
-int Infix_Evaluator::evaluate(string expression)
+int Infix_Evaluator::evaluate(string expression, int& index)
 {
 	// Remove all whitespace from expression
 	expression.erase(remove_if(expression.begin(), expression.end(), isspace), expression.end());
@@ -16,6 +16,7 @@ int Infix_Evaluator::evaluate(string expression)
 	char test;
 	while (tokens >> test)
 	{
+		index++;
 		//there was another character, now replace the character to properly tokenize it
 		tokens.putback(test);
 		token = tokenizer.nextToken(tokens, last_pushed);
