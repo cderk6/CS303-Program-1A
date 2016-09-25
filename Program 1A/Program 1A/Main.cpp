@@ -12,7 +12,11 @@ int main()
 	//catch and output bad logic input by user
 	try
 	{
+<<<<<<< HEAD
 		result = evaluate.evaluate("3+++ 2");
+=======
+		result = evaluate.evaluate("-++---5");
+>>>>>>> 9d4912adeb114eb12835a31a32e8ecbcbc8e931e
 	}
 	catch (const logic_error e)
 	{
