@@ -39,7 +39,7 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			string return_string = first_char + second_char;
 			return return_string;
 		}
-		//if not, just return the !
+		//if not, just return the single character
 		else
 		{
 			tokens.putback(next_next_char);
@@ -108,12 +108,21 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 	if (next_char == '-')
 	{
-		if (isdigit(last_pushed[0]) || last_pushed == ")"  )
-			return "-";
+		//if it follows an operand, return binary - sign
+		if (isdigit(last_pushed[0]) || last_pushed == ")")
+		{
+			char next_next_char;
+			if (tokens >> next_next_char)
+			{
+				tokens.putback(next_next_char);
+				return "-";
+			}
+			else
+				throw logic_error("Expression cannot end with an operator.");
+		}
+		//has to be one of two unary operators "neg" or "--"
 		else
 		{
 			char next_next_char;
@@ -128,26 +137,6 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 				throw logic_error("Expression cannot end with an operator.");
 		}
 	}
-	if (next_char == '<' || next_char == '>')
-	{
-		char next_next_char;
-		tokens >> next_next_char;
-		if (next_next_char == '=')
-		{
-			string first_char, second_char;
-			first_char = next_char, second_char = next_next_char;
-			string return_string = first_char + second_char;
-			return return_string;
-		}
-		else
-		{
-			tokens.putback(next_next_char);
-			string return_string;
-			return_string = next_char;
-			return return_string;
-		}
-	}
->>>>>>> 9d4912adeb114eb12835a31a32e8ecbcbc8e931e
 	if (next_char == '=' || next_char == '&' || next_char == '|')
 	{
 		//if character is followed by itself, combine characters and return as single token
