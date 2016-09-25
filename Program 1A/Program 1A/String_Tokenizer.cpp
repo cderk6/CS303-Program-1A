@@ -21,7 +21,9 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 		if (next_char != '(')
 		{
 			if (last_pushed == "")
-				throw logic_error("Cant start with closing parens or binary operator");
+				throw logic_error("Expression can't start with a closing parenthesis or binary operator");
+			if (last_pushed == "!" || last_pushed == "++" || last_pushed == "--" || last_pushed == "neg")
+				throw logic_error("A unary operator can't be followed by a binary operator");
 		}
 		string return_string;
 		return_string = next_char;
@@ -32,15 +34,19 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 		if (next_char == '<' || next_char == '>')
 		{
 			if (last_pushed == "")
-				throw logic_error("Can't start with a binary operator");
+				throw logic_error("Expression can't start with a binary operator");
 			if (last_pushed[0] == next_char)
 				throw logic_error("Two binary operators in a row");
+			if (last_pushed == "!" || last_pushed == "++" || last_pushed == "--" || last_pushed == "neg")
+				throw logic_error("A unary operator can't be followed by a binary operator");
 		}
 		//if followed by a =, return them as a combined token
 		char next_next_char;
 		tokens >> next_next_char;
 		if (next_next_char == '=')
 		{
+			if (last_pushed == "!" || last_pushed == "++" || last_pushed == "--" || last_pushed == "neg")
+				throw logic_error("A unary operator can't be followed by a binary operator");
 			string first_char, second_char;
 			first_char = next_char, second_char = next_next_char;
 			string return_string = first_char + second_char;
@@ -117,9 +123,10 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 	if (next_char == '=' || next_char == '&' || next_char == '|')
 	{
 		if (last_pushed[0] == next_char)
-		{
 			throw logic_error("Two binary operators in a row");
-		}
+		if (last_pushed == "!" || last_pushed == "++" || last_pushed == "--" || last_pushed == "neg")
+			throw logic_error("A unary operator can't be followed by a binary operator");
+
 		//if character is followed by itself, combine characters and return as single token
 		char next_next_char;
 		tokens >> next_next_char;

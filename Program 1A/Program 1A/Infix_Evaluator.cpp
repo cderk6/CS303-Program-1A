@@ -7,6 +7,17 @@ const int PRECEDENCE[] = { 1, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 8,
 
 int Infix_Evaluator::evaluate(string expression, int& index)
 {
+	for (int i = 1; i < expression.length() - 1; i++)
+	{
+		if (expression[i] == ' ')
+		{
+			if (isdigit(expression[i - 1]) && isdigit(expression[i + 1]))
+			{
+				index = i + 2;
+				throw logic_error("Two operands in a row");
+			}
+		}
+	}
 	// Remove all whitespace from expression
 	expression.erase(remove_if(expression.begin(), expression.end(), isspace), expression.end());
 	//convert string to string stream object in order to easily manipulate the expression
@@ -16,11 +27,12 @@ int Infix_Evaluator::evaluate(string expression, int& index)
 	char test;
 	while (tokens >> test)
 	{
-		index++;
+		++index;
 		//there was another character, now replace the character to properly tokenize it
 		tokens.putback(test);
 		token = tokenizer.nextToken(tokens, last_pushed);
 		cout << token;
+		index += token.length() - 1;	// adjusts index in case the character was part of a larger operand/operator
 		// handle operands, convert to int and push onto operand stack
 		if (getPrecedence(token) < 0)
 			operands.push(atoi(token.c_str()));
