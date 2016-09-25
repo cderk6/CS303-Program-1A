@@ -44,7 +44,7 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			return return_string;
 		}
 	}
-	if (next_char == '+' || next_char == '-')
+	if (next_char == '+')
 	{
 		int count = 0;
 		char next_next_char;
@@ -102,10 +102,24 @@ string String_Tokenizer::nextToken(istringstream& tokens, string last_pushed)
 			}
 		}
 	}
-	//if (next_char == '-')
-	//{
-	//	return "-";
-	//}
+	if (next_char == '-')
+	{
+		if (isdigit(last_pushed[0]) || last_pushed == ")"  )
+			return "-";
+		else
+		{
+			char next_next_char;
+			if (tokens >> next_next_char)
+			{
+				if (next_next_char == next_char)
+					return "--";
+				tokens.putback(next_next_char);
+				return "neg";
+			}
+			else
+				throw logic_error("Expression cannot end with an operator.");
+		}
+	}
 	if (next_char == '<' || next_char == '>')
 	{
 		char next_next_char;

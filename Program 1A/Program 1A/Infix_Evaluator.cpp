@@ -2,7 +2,7 @@
 #include <algorithm>
 
 const string OPERATORS[] = { "||", "&&", "==", "!=", "<", ">", ">=", "<=", "+", "-",
-								"*", "/" , "%", "^", "-", "--", "++", "!", "(", ")" };
+								"*", "/" , "%", "^", "neg", "--", "++", "!", "(", ")" };
 const int PRECEDENCE[] = { 1, 2, 3, 3, 4, 4, 4, 4, 5, 5, 6, 6, 6, 7, 8, 8, 8, 8, 0, 0 };
 
 int Infix_Evaluator::evaluate(string expression)

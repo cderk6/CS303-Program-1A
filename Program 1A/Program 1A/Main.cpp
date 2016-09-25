@@ -10,7 +10,7 @@ int main()
 	int result;
 	try
 	{
-		result = evaluate.evaluate("a");
+		result = evaluate.evaluate("-++---5");
 	}
 	catch (const logic_error e)
 	{
