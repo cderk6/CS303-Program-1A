@@ -13,7 +13,7 @@ int main()
 	//catch and output bad logic input by user
 	try
 	{
-		result = evaluate.evaluate("3&&&& 5", index);
+		result = evaluate.evaluate("1+2*3", index);
 	}
 	catch (const logic_error e)
 	{

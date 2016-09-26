@@ -31,7 +31,6 @@ int Infix_Evaluator::evaluate(string expression, int& index)
 		//there was another character, now replace the character to properly tokenize it
 		tokens.putback(test);
 		token = tokenizer.nextToken(tokens, last_pushed);
-		cout << token;
 		index += token.length() - 1;	// adjusts index in case the character was part of a larger operand/operator
 		// handle operands, convert to int and push onto operand stack
 		if (getPrecedence(token) < 0)
@@ -83,11 +82,6 @@ int Infix_Evaluator::evaluate(string expression, int& index)
 				}
 			} while (!operator_pushed);
 		}
-		if (!operands.empty())
-			cout << "   Top: " << operands.top();
-		if (!operators.empty())
-			cout << " and " << operators.top();
-		cout << endl;
 		//save the token to pass to tokenizer as the last token pushed
 		last_pushed = token;
 	}
@@ -97,11 +91,6 @@ int Infix_Evaluator::evaluate(string expression, int& index)
 	{
 		//operate using top operator of operator stack
 		operate();
-		if (!operands.empty())
-			cout << "   Top: " << operands.top();
-		if (!operators.empty())
-			cout << " and " << operators.top();
-		cout << endl;
 	}
 	//one number left in operand stack is the answer
 	return operands.top();
